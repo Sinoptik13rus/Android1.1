@@ -7,6 +7,6 @@ data class Post (
     val published: String,
     val counterLike: Int = 0,
     val counterRepost: Int = 0,
-    val counterView: Int = 0,
+    val counterView: Int = 5,
     val likedByMe: Boolean = false
 )
