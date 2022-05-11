@@ -32,7 +32,9 @@ class MainActivity : AppCompatActivity() {
                 repostText.text = counterView(post.counterRepost)
                 viewText.text = counterView(post.counterView)
 
-                likeButton.setImageResource(getLikeIconRes(post.likedByMe))
+                likeButton.setImageResource(
+                    if (post.likedByMe) R.drawable.ic_red_favorite_24dp else R.drawable.ic_favorite_24dp
+                )
 
                 likeButton.setOnClickListener {
                     viewModel.onLikeClicked()
@@ -45,7 +47,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @DrawableRes
-    private fun getLikeIconRes(liked: Boolean) =
-        if (liked) R.drawable.ic_red_favorite_24dp else R.drawable.ic_favorite_24dp
 }

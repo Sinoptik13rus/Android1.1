@@ -12,7 +12,9 @@ class PostRepositoryImpl : PostRepository {
         published = "05.05.2022"
     )
 
-    override val data = MutableLiveData(post)
+    private val data = MutableLiveData(post)
+
+    override fun get(): LiveData<Post> = data
 
     override fun like() {
 
