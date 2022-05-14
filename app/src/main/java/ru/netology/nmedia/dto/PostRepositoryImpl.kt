@@ -37,7 +37,7 @@ class PostRepositoryImpl : PostRepository {
             published = "09.02.2021"
         ),
         Post(
-            id = 4L,
+            id = 6L,
             author = "Инспектор Гаджет",
             content = "Привет! Это новый Гаджет",
             published = "21.05.2009"
@@ -46,7 +46,7 @@ class PostRepositoryImpl : PostRepository {
 
     private val data = MutableLiveData(posts)
 
-    override val getAll: LiveData<List<Post>> = data
+    override fun get(): LiveData<List<Post>> = data
 
     override fun likeById(id: Long) {
 
