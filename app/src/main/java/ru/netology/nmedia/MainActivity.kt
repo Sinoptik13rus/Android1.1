@@ -8,13 +8,12 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import ru.netology.nmedia.databinding.ActivityMainBinding
+import ru.netology.nmedia.databinding.PostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.counterView
 import ru.netology.nmedia.viewModel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
-
-    private val viewModel by viewModels<PostViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,25 +21,30 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.data.observe(this) { post ->
-            with(binding) {
-                authorName.text = post.author
-                textPost.text = post.content
-                date.text = post.published
+        val viewModel: PostViewModel by viewModels()
 
-                likeText.text = counterView(post.counterLike)
-                repostText.text = counterView(post.counterRepost)
-                viewText.text = counterView(post.counterView)
+        viewModel.data.observe(this) { posts ->
+            binding.container.removeAllViews()
+            posts.map { post ->
+                PostBinding.inflate(layoutInflater, binding.container, true).apply {
+                    authorName.text = post.author
+                    textPost.text = post.content
+                    date.text = post.published
 
-                likeButton.setImageResource(getLikeIconRes(post.likedByMe))
+                    likeText.text = counterView(post.counterLike)
+                    repostText.text = counterView(post.counterRepost)
+                    viewText.text = counterView(post.counterView)
 
-                likeButton.setOnClickListener {
-                    viewModel.onLikeClicked()
-                }
+                    likeButton.setImageResource(getLikeIconRes(post.likedByMe))
 
-                repostButton.setOnClickListener {
-                    viewModel.onRepostClicked()
-                }
+                    likeButton.setOnClickListener {
+                        viewModel.onLikeClickedId(post.id)
+                    }
+
+                    repostButton.setOnClickListener {
+                        viewModel.onRepostClickedId(post.id)
+                    }
+                }.root
             }
         }
     }
