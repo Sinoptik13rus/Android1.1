@@ -5,51 +5,23 @@ import androidx.lifecycle.MutableLiveData
 
 class PostRepositoryImpl : PostRepository {
 
-    private var posts = listOf(
-        Post(
-            id = 0L,
-            author = "Адриано Челентано",
-            content = "Привет! Это новый Адриано Челентано!",
-            published = "05.05.2022"
-        ),
-        Post(
-            id = 1L,
-            author = "Массимо Каррера",
-            content = "Привет! Это новый тренер по футболу",
-            published = "14.05.2022"
-        ),
-        Post(
-            id = 2L,
-            author = "Олег Газманов",
-            content = "Привет! Это новый вокал от звезды",
-            published = "12.05.2022"
-        ),
-        Post(
-            id = 3L,
-            author = "Дэвид Духовны",
-            content = "Привет! Это новый сериал",
-            published = "10.05.2019"
-        ),
-        Post(
-            id = 4L,
-            author = "Антонио Конте",
-            content = "Привет! Это новый контракт с тренером",
-            published = "09.02.2021"
-        ),
-        Post(
-            id = 6L,
-            author = "Инспектор Гаджет",
-            content = "Привет! Это новый Гаджет",
-            published = "21.05.2009"
-        )
-    )
+    private var nextId = GENERATED_POSTS_AMOUNT.toLong()
+
+    private var posts =
+        List(GENERATED_POSTS_AMOUNT) { index ->
+            Post(
+                id = index + 1L,
+                author = "Адриано Челентано",
+                content = "Привет! Это новый Адриано Челентано! Очередной $index",
+                published = "21.05.2022"
+            )
+        }
 
     private val data = MutableLiveData(posts)
 
     override fun get(): LiveData<List<Post>> = data
 
     override fun likeById(id: Long) {
-
         posts = posts.map {
             if (it.id != id) it else {
                 if (!it.likedByMe) {
@@ -64,11 +36,36 @@ class PostRepositoryImpl : PostRepository {
     }
 
     override fun repostById(id: Long) {
-
         posts = posts.map {
             if (it.id != id) it else it.copy(counterRepost = it.counterRepost + 1)
         }
         data.value = posts
-
     }
+
+    override fun removeById(id: Long) {
+        posts = posts.filter { it.id != id }
+        data.value = posts
+    }
+
+    override fun save(post: Post) {
+        if (post.id == PostRepository.NEW_POST_ID) insert(post) else update(post)
+    }
+
+    private fun insert(post: Post) {
+        posts = listOf(post.copy(id = ++nextId)) + posts
+        data.value = posts
+    }
+
+    private fun update(post: Post) {
+        posts = posts.map {
+            if (it.id == post.id) post else it
+        }
+        data.value = posts
+    }
+
+    private companion object {
+        const val GENERATED_POSTS_AMOUNT = 1000
+    }
+
+
 }
