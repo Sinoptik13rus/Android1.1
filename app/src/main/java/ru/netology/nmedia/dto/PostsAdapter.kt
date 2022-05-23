@@ -2,26 +2,23 @@ package ru.netology.nmedia.dto
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.PostBinding
-import kotlin.properties.Delegates
-import kotlin.reflect.KFunction1
 
-typealias onAnyListener = (Post) -> Unit
 
 class PostsAdapter(
-    private val onLikeListener: onAnyListener,
-    private val onRepostListener: onAnyListener
+    private val interactionListener: PostInteractionListener
 ) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = PostBinding.inflate(inflater, parent, false)
-        return PostViewHolder(binding, onLikeListener, onRepostListener)
+        return PostViewHolder(binding, interactionListener)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
@@ -32,8 +29,7 @@ class PostsAdapter(
 
 class PostViewHolder(
     private val binding: PostBinding,
-    private val onLikeListener: onAnyListener,
-    private val onRepostListener: onAnyListener
+    private val listener: PostInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
@@ -42,29 +38,44 @@ class PostViewHolder(
             textPost.text = post.content
             date.text = post.published
 
-            likeText.text = counterView(post.counterLike)
-            repostText.text = counterView(post.counterRepost)
-            viewText.text = counterView(post.counterView)
+            likeButton.text = counterView(post.counterLike)
+            repostButton.text = counterView(post.counterRepost)
+            viewButton.text = counterView(post.counterView)
 
-            likeButton.setImageResource(getLikeIconRes(post.likedByMe))
+            likeButton.isChecked = post.likedByMe
 
             likeButton.setOnClickListener {
-                onLikeListener(post)
+                listener.onLikeListener(post)
             }
 
             repostButton.setOnClickListener {
-                onRepostListener(post)
+                listener.onRepostListener(post)
+            }
+
+            menuButton.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.options_post)
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.remove -> {
+                                listener.onRemoveListener(post)
+                                true
+                            }
+                            R.id.edit -> {
+                                listener.onEditListener(post)
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                }.show()
             }
         }
     }
+
 }
 
-
-@DrawableRes
-private fun getLikeIconRes(liked: Boolean) =
-    if (liked) R.drawable.ic_red_favorite_24dp else R.drawable.ic_favorite_24dp
-
-class PostDiffCallback: DiffUtil.ItemCallback<Post>() {
+class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.id == newItem.id
     }
