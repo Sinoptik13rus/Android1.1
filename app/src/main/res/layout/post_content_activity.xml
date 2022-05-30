@@ -8,7 +8,7 @@
     toosl:context=".activity.PostContentActivity">
 
     <EditText
-        android:id="@+id/edit"
+        android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="start|top"
@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/description_post_save"
         android:src="@drawable/ic_save_24"
-        app:layout_anchor="@id/bottomAppBar"/>
+        app:layout_anchor="@id/bottomAppBar"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

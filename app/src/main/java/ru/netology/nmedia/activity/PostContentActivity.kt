@@ -13,32 +13,42 @@ class PostContentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val binding = PostContentActivityBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
-        binding.edit.requestFocus()
+
+        val extras = intent.extras
+        if (extras != null) {
+            binding.editText.setText(extras.getString("content"))
+        }
+
+        binding.editText.requestFocus()
         binding.ok.setOnClickListener {
             val intent = Intent()
-            val text = binding.edit.text
+            val text = binding.editText.text
             if (text.isNullOrBlank()) {
-                setResult(Activity.RESULT_CANCELED, intent)
+                setResult(RESULT_CANCELED, intent)
             } else {
                 val content = text.toString()
                 intent.putExtra(RESULT_KEY, content)
-                setResult(Activity.RESULT_OK, intent)
+                setResult(RESULT_OK, intent)
             }
             finish()
         }
     }
 
-    object ResultContract : ActivityResultContract<Unit, String?>() {
-        override fun createIntent(context: Context, input: Unit) =
-            Intent(context, PostContentActivity::class.java)
+    object ResultContract : ActivityResultContract<String?, String?>() {
+        override fun createIntent(context: Context, input: String?) : Intent {
+            return Intent(
+                context,
+                PostContentActivity::class.java
+            ).putExtra("content", input)
+        }
 
         override fun parseResult(resultCode: Int, intent: Intent?) =
             if (resultCode == Activity.RESULT_OK) {
                 intent?.getStringExtra(RESULT_KEY)
             } else null
         }
+
 
     private companion object {
         private const val RESULT_KEY = "postNewContent"

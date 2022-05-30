@@ -15,6 +15,7 @@ class PostViewModel: ViewModel(), PostInteractionListener {
 
     val repostPostContent = SingleLiveEvent<String>()
     val navigateToPostContentScreenEvent = SingleLiveEvent<Unit>()
+    val videoUrl = SingleLiveEvent<String>()
     val currentPost = MutableLiveData<Post?>(null)
 
     fun onSaveListener(content: String) {
@@ -30,18 +31,30 @@ class PostViewModel: ViewModel(), PostInteractionListener {
         currentPost.value = null
     }
 
-    override fun onLikeListener(post: Post) = repository.likeById(post.id)
-//    override fun onRepostListener(post: Post) = repository.repostById(post.id)
-    override fun onRepostListener(post: Post) {
-        repostPostContent.value = post.content
-    }
-    override fun onRemoveListener(post: Post) = repository.removeById(post.id)
-    override fun onEditListener(post: Post) {
-        currentPost.value = post
+    fun onAddClicked() {
+        currentPost.value = null
+        navigateToPostContentScreenEvent.call()
     }
 
-    fun onAddClicked() {
+    override fun onLikeListener(post: Post) = repository.likeById(post.id)
+
+    override fun onRepostListener(post: Post) {
+        repostPostContent.value = post.content
+        repository.repostById(post.id)
+    }
+    override fun onRemoveListener(post: Post) = repository.removeById(post.id)
+
+    override fun onEditListener(post: Post) {
+        currentPost.value = post
         navigateToPostContentScreenEvent.call()
+    }
+
+    override fun onVideoPlayButtonClicked(post: Post) {
+        videoUrl.value = post.videoUrl
+    }
+
+    override fun onVideoBannerClicked(post: Post) {
+        videoUrl.value = post.videoUrl
     }
 
 }

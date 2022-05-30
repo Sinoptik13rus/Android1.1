@@ -13,6 +13,8 @@ interface PostRepository {
 
     fun save(post: Post)
 
+    fun update(post: Post)
+
     companion object {
         const val NEW_POST_ID = 0L
     }
