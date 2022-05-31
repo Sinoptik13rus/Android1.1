@@ -6,7 +6,13 @@ data class Post (
     val content: String,
     val published: String,
     val counterLike: Int = 0,
+    val likedByMe: Boolean = false,
     val counterRepost: Int = 0,
+    val repostByMe: Boolean = false,
     val counterView: Int = 5,
-    val likedByMe: Boolean = false
-)
+
+
+    val views: Int = 0
+) {
+    var videoUrl: String = ""
+}

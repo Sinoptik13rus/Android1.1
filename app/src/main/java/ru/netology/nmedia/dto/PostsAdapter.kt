@@ -1,76 +1,121 @@
 package ru.netology.nmedia.dto
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.PostBinding
-import kotlin.properties.Delegates
-import kotlin.reflect.KFunction1
+import ru.netology.nmedia.util.UrlParse
 
-typealias onAnyListener = (Post) -> Unit
 
 class PostsAdapter(
-    private val onLikeListener: onAnyListener,
-    private val onRepostListener: onAnyListener
-) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
+    private val interactionListener: PostInteractionListener
+) : ListAdapter<Post, PostsAdapter.PostViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = PostBinding.inflate(inflater, parent, false)
-        return PostViewHolder(binding, onLikeListener, onRepostListener)
+        return PostViewHolder(binding, interactionListener)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        val post = getItem(position)
-        holder.bind(post)
+        holder.bind(getItem(position))
     }
-}
 
 class PostViewHolder(
     private val binding: PostBinding,
-    private val onLikeListener: onAnyListener,
-    private val onRepostListener: onAnyListener
+    private val interactionListener: PostInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(post: Post) {
-        binding.apply {
-            authorName.text = post.author
-            textPost.text = post.content
-            date.text = post.published
+    private lateinit var post: Post
 
-            likeText.text = counterView(post.counterLike)
-            repostText.text = counterView(post.counterRepost)
-            viewText.text = counterView(post.counterView)
-
-            likeButton.setImageResource(getLikeIconRes(post.likedByMe))
-
-            likeButton.setOnClickListener {
-                onLikeListener(post)
-            }
-
-            repostButton.setOnClickListener {
-                onRepostListener(post)
+    private val popupMenu by lazy {
+        PopupMenu(itemView.context, binding.menuButton).apply {
+            inflate(R.menu.options_post)
+            setOnMenuItemClickListener { option ->
+                when (option.itemId) {
+                    R.id.remove -> {
+                        interactionListener.onRemoveListener(post)
+                        true
+                    }
+                    R.id.edit -> {
+                        interactionListener.onEditListener(post)
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
             }
         }
     }
-}
 
+    init {
+        binding.likeButton.setOnClickListener {
+            interactionListener.onLikeListener(post)
+        }
 
-@DrawableRes
-private fun getLikeIconRes(liked: Boolean) =
-    if (liked) R.drawable.ic_red_favorite_24dp else R.drawable.ic_favorite_24dp
+        binding.repostButton.setOnClickListener {
+            interactionListener.onRepostListener(post)
+        }
 
-class PostDiffCallback: DiffUtil.ItemCallback<Post>() {
-    override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem.id == newItem.id
+        binding.menuButton.setOnClickListener {
+            popupMenu.show()
+        }
+
+        binding.videoPlayMaterialButton.setOnClickListener {
+            interactionListener.onVideoPlayButtonClicked(post)
+        }
+
+        binding.videoBannerImageButton.setOnClickListener {
+            interactionListener.onVideoBannerClicked(post)
+        }
+
     }
 
-    override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem == newItem
+        fun bind(post: Post) {
+            this.post = post
+            binding.apply {
+                authorName.text = post.author
+                textPost.text = post.content
+                date.text = post.published
+                likeButton.text = counterView(post.counterLike)
+                likeButton.isChecked = post.likedByMe
+                repostButton.text = counterView(post.counterRepost)
+                repostButton.isChecked = post.repostByMe
+                viewButton.text = counterView(post.counterView)
+
+
+                val urlList = UrlParse.getHyperLinks(textPost.text.toString())
+                for (link in urlList) {
+                    if (link.contains("vkontakte") || link.contains("vk.com")) {
+                        post.videoUrl = link
+                    } else {
+                        post.videoUrl = ""
+                    }
+                }
+                if (post.videoUrl.isEmpty()) {
+                    videoContentGroup.visibility = View.GONE
+                } else {
+                    videoContentGroup.visibility = View.VISIBLE
+                }
+            }
+        }
+
     }
 
+    class DiffCallback : DiffUtil.ItemCallback<Post>() {
+        override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
+            return oldItem == newItem
+        }
+
+    }
 }
