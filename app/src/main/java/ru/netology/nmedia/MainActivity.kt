@@ -26,6 +26,13 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(posts)
         }
 
+        val postContentActivityLauncher = registerForActivityResult(
+            PostContentActivity.ResultContract
+        ) { postContent ->
+            postContent ?: return@registerForActivityResult
+            viewModel.onSaveListener(postContent)
+        }
+
         binding.fab.setOnClickListener {
             viewModel.onAddClicked()
 
@@ -43,12 +50,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(repostIntent)
             }
 
-            val postContentActivityLauncher = registerForActivityResult(
-                PostContentActivity.ResultContract
-            ) { postContent ->
-                postContent ?: return@registerForActivityResult
-                viewModel.onSaveListener(postContent)
-            }
+
 
             viewModel.navigateToPostContentScreenEvent.observe(this) {
                 val content = viewModel.currentPost.value?.content
