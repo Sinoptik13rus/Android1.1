@@ -1,10 +1,13 @@
 package ru.netology.nmedia
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.content.edit
+import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.activity.PostContentActivity
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.PostsAdapter
