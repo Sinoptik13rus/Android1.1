@@ -1,4 +1,4 @@
-package ru.netology.nmedia.dto.impl
+package ru.netology.nmedia.data.impl
 
 import android.app.Application
 import android.content.Context
@@ -8,7 +8,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.dto.PostRepository
+import ru.netology.nmedia.data.PostRepository
 import kotlin.properties.Delegates
 
 class SharedPrefsPostRepository(

@@ -4,9 +4,10 @@ import SingleLiveEvent
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import ru.netology.nmedia.adapter.PostInteractionListener
+import ru.netology.nmedia.data.PostRepository
 import ru.netology.nmedia.dto.*
-import ru.netology.nmedia.dto.impl.FilePostRepository
-import ru.netology.nmedia.dto.impl.SharedPrefsPostRepository
+import ru.netology.nmedia.data.impl.FilePostRepository
 
 class PostViewModel(
     application: Application
@@ -18,7 +19,8 @@ class PostViewModel(
     val data by repository::data
 
     val repostPostContent = SingleLiveEvent<String>()
-    val navigateToPostContentScreenEvent = SingleLiveEvent<Unit>()
+    val navigateToPostContentScreenEvent = SingleLiveEvent<String>()
+    val navigateToPostScreenEvent = SingleLiveEvent<Post>()
     val videoUrl = SingleLiveEvent<String>()
     val currentPost = MutableLiveData<Post?>(null)
 
@@ -60,5 +62,10 @@ class PostViewModel(
     override fun onVideoBannerClicked(post: Post) {
         videoUrl.value = post.videoUrl
     }
+
+    override fun onPostClicked(post: Post) {
+        navigateToPostContentScreenEvent.value = post.content
+    }
+
 
 }

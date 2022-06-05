@@ -1,4 +1,6 @@
-package ru.netology.nmedia.dto
+package ru.netology.nmedia.adapter
+
+import ru.netology.nmedia.dto.Post
 
 interface PostInteractionListener {
 
@@ -13,5 +15,7 @@ interface PostInteractionListener {
     fun onVideoPlayButtonClicked(post: Post)
 
     fun onVideoBannerClicked(post: Post)
+
+    fun onPostClicked(post: Post)
 
 }

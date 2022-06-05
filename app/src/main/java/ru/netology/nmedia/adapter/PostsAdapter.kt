@@ -1,4 +1,4 @@
-package ru.netology.nmedia.dto
+package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.PostBinding
+import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.counterView
 import ru.netology.nmedia.util.UrlParse
 
 
@@ -73,6 +75,10 @@ class PostViewHolder(
 
         binding.videoBannerImageButton.setOnClickListener {
             interactionListener.onVideoBannerClicked(post)
+        }
+
+        binding.root.setOnClickListener {
+            interactionListener.onPostClicked(post)
         }
 
     }
