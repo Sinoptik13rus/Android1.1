@@ -52,7 +52,8 @@ class PostViewModel(
 
     override fun onEditListener(post: Post) {
         currentPost.value = post
-        navigateToPostContentScreenEvent.call()
+        navigateToPostContentScreenEvent.value = post.content
+//        navigateToPostContentScreenEvent.call()
     }
 
     override fun onVideoPlayButtonClicked(post: Post) {
@@ -64,7 +65,7 @@ class PostViewModel(
     }
 
     override fun onPostClicked(post: Post) {
-        navigateToPostContentScreenEvent.value = post.content
+        navigateToPostScreenEvent.value = post
     }
 
 
