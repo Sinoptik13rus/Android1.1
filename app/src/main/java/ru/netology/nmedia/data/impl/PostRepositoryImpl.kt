@@ -59,7 +59,7 @@ class PostRepositoryImpl : PostRepository {
         data.value = newListPost
     }
 
-    override fun update(post: Post) {
+    private fun update(post: Post) {
         val newListPost = posts.map {
             if (it.id == post.id) post else it
         }

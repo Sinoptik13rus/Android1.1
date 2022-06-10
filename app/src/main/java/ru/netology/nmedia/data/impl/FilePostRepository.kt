@@ -85,7 +85,7 @@ class FilePostRepository(
         posts = listOf(post.copy(id = ++nextId)) + posts
     }
 
-    override fun update(post: Post) {
+    private fun update(post: Post) {
         posts = posts.map {
             if (it.id == post.id) post else it
         }

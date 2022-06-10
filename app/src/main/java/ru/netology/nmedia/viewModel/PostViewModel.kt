@@ -8,13 +8,19 @@ import ru.netology.nmedia.adapter.PostInteractionListener
 import ru.netology.nmedia.data.PostRepository
 import ru.netology.nmedia.dto.*
 import ru.netology.nmedia.data.impl.FilePostRepository
+import ru.netology.nmedia.data.impl.SQLiteRepository
+import ru.netology.nmedia.db.AppDb
 
 class PostViewModel(
     application: Application
 ): AndroidViewModel(application),
     PostInteractionListener {
     private val repository: PostRepository =
-        FilePostRepository(application)
+        SQLiteRepository(
+            dao = AppDb.getInstance(
+                context = application
+            ).postDao
+        )
 
     val data by repository::data
 
@@ -53,7 +59,7 @@ class PostViewModel(
     override fun onEditListener(post: Post) {
         currentPost.value = post
         navigateToPostContentScreenEvent.value = post.content
-//        navigateToPostContentScreenEvent.call()
+
     }
 
     override fun onVideoPlayButtonClicked(post: Post) {
