@@ -7,8 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.adapter.PostInteractionListener
 import ru.netology.nmedia.data.PostRepository
 import ru.netology.nmedia.dto.*
-import ru.netology.nmedia.data.impl.FilePostRepository
-import ru.netology.nmedia.data.impl.SQLiteRepository
+import ru.netology.nmedia.data.impl.PostRepositoryImpl
 import ru.netology.nmedia.db.AppDb
 
 class PostViewModel(
@@ -16,7 +15,7 @@ class PostViewModel(
 ): AndroidViewModel(application),
     PostInteractionListener {
     private val repository: PostRepository =
-        SQLiteRepository(
+        PostRepositoryImpl(
             dao = AppDb.getInstance(
                 context = application
             ).postDao
