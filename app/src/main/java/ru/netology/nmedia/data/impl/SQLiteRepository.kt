@@ -9,12 +9,12 @@ class SQLiteRepository(
     private val dao: PostDao
 ) : PostRepository {
 
+    override val data = MutableLiveData(dao.getAll())
+
     private val posts
         get() = checkNotNull(data.value) {
             "Data value should not be null"
         }
-
-    override val data = MutableLiveData(dao.getAll())
 
     override fun likeById(id: Long) {
         dao.likeById(id)
@@ -32,7 +32,10 @@ class SQLiteRepository(
     override fun repostById(id: Long) {
         dao.repostById(id)
         data.value = posts.map {
-            if (it.id != id) it else it.copy(counterRepost = it.counterRepost + 1)
+            if (it.id != id) it else it.copy(
+                counterRepost = it.counterRepost + 1,
+                repostByMe = true
+            )
         }
     }
 

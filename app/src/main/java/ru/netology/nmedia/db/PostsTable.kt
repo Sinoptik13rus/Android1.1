@@ -12,7 +12,9 @@ object PostsTable {
             ${Column.PUBLISHED.columnName} TEXT NOT NULL,
             ${Column.LIKED_BY_ME.columnName} BOOLEAN NOT NULL DEFAULT 0,
             ${Column.LIKES.columnName} INTEGER NOT NULL DEFAULT 0,
-            ${Column.REPOST.columnName} BOOLEAN NOT NULL DEFAULT 0
+            ${Column.REPOST_BY_ME.columnName} BOOLEAN NOT NULL DEFAULT 0,
+            ${Column.REPOST.columnName} INTEGER NOT NULL DEFAULT 0,
+            ${Column.VIEWS.columnName} INTEGER NOT NULL DEFAULT 0
         );
         """.trimIndent()
 
@@ -27,7 +29,9 @@ object PostsTable {
         PUBLISHED("published"),
         LIKED_BY_ME("likedByMe"),
         LIKES("likes"),
-        REPOST("repost")
+        REPOST_BY_ME("repostByMe"),
+        REPOST("repost"),
+        VIEWS("views")
     }
 
 }

@@ -10,5 +10,7 @@ fun Cursor.toPost() = Post(
     published = getString(getColumnIndexOrThrow(PostsTable.Column.PUBLISHED.columnName)),
     likedByMe = getInt(getColumnIndexOrThrow(PostsTable.Column.LIKED_BY_ME.columnName)) != 0,
     counterLike = getInt(getColumnIndexOrThrow(PostsTable.Column.LIKES.columnName)),
-    repostByMe = getInt(getColumnIndexOrThrow(PostsTable.Column.LIKED_BY_ME.columnName)) != 0
+    repostByMe = getInt(getColumnIndexOrThrow(PostsTable.Column.REPOST_BY_ME.columnName)) != 0,
+    counterRepost = getInt(getColumnIndexOrThrow(PostsTable.Column.REPOST.columnName)),
+    counterView = getInt(getColumnIndexOrThrow(PostsTable.Column.VIEWS.columnName))
 )
